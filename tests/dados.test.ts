@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { lerArgumentos } from "../src/cadastro/argumentos.ts";
 import { FonteDiretorio } from "../src/dados/fonte-diretorio.ts";
 import { FonteTextoJson } from "../src/dados/fonte-texto-json.ts";
-import { salvarNovaPessoa } from "../src/dados/gravador-diretorio.ts";
+import { atualizarPessoa, salvarNovaPessoa } from "../src/dados/gravador-diretorio.ts";
 import { umaPessoa } from "./fixtures.ts";
 
 describe("lerArgumentos", () => {
@@ -56,6 +56,13 @@ describe("fontes e gravação", () => {
     await salvarNovaPessoa(dir, umaPessoa());
     await expect(salvarNovaPessoa(dir, umaPessoa({ codigo: "qqq222" }))).rejects.toThrow(/já existe/);
     expect(JSON.parse(await readFile(join(dir, "jose-blabla.json"), "utf8")).codigo).toBe("abc234");
+  });
+
+  it("atualiza só um cadastro existente", async () => {
+    const arquivo = await salvarNovaPessoa(dir, umaPessoa());
+    await atualizarPessoa(arquivo, umaPessoa({ codigo: "qqq222" }));
+    expect(JSON.parse(await readFile(arquivo, "utf8")).codigo).toBe("qqq222");
+    await expect(atualizarPessoa(join(dir, "outra.json"), umaPessoa())).rejects.toThrow(/não encontrado/);
   });
 
   it("informa o arquivo com JSON inválido", async () => {

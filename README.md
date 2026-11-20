@@ -4,12 +4,31 @@ Gera uma página estática por ciclista com nome, tipo sanguíneo, alergias e co
 para ser aberta por um QR code colado na bicicleta.
 
 ```
-site.com.br/jose-blabla-v5d9fx.html
-site.com.br/maria-blabla-ww7fhv.html
+site.com.br/jose-v5d9fx.html
+site.com.br/maria-ww7fhv.html
 ```
 
 O sufixo aleatório impede que alguém adivinhe a página só pelo nome. A raiz do site não lista
 ninguém e nenhuma página é indexada por buscadores.
+
+## Proteção contra golpes
+
+O golpe do "falso acidente" usa nome completo e parentesco para pedir PIX à família. Por isso
+a página mostra só o necessário para o socorro:
+
+- "José B." em vez do nome completo, e só o primeiro nome na URL;
+- contatos como "Maria (Esposa)", com botões de ligar e WhatsApp, sem o número escrito na tela;
+- tipo sanguíneo e alergias completos (salvam vidas e não servem para golpe).
+
+Se o link vazar (ex.: alguém fotografou o adesivo), gere um novo e invalide o antigo:
+
+```bash
+npm run trocar-codigo -- "José Blabla"
+npm run publicar   # e imprima um novo adesivo
+```
+
+Combine com quem é contato de emergência: **SAMU, bombeiros e hospitais nunca pedem PIX por
+telefone.** Na dúvida, desligue e ligue você mesmo para o 192 ou para o hospital.
 
 ## Uso
 
@@ -33,10 +52,11 @@ Ele pergunta o que faltar e chama o mesmo comando.
 | `npm run dev` | build + servidor local |
 | `npm run check` | typecheck + testes |
 | `npm run publicar` | envia os cadastros ao GitHub e publica o site |
+| `npm run trocar-codigo -- "Nome"` | gera um link novo e invalida o antigo |
 | `npm run -s dados:exportar` | imprime todas as pessoas no formato do secret `PESSOAS_JSON` |
 
-Para editar uma pessoa, altere `pessoas/<slug>.json` e rode o build. **Não mude o `codigo`**:
-ele está no QR code impresso.
+Para editar uma pessoa, altere `pessoas/<slug>.json` e rode o build. **Não mude o `codigo` à mão**:
+ele está no QR code impresso (use `npm run trocar-codigo` só se o link vazar).
 
 ## Publicação (GitHub Pages)
 

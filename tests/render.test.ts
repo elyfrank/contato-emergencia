@@ -26,8 +26,8 @@ describe("html", () => {
 describe("página da pessoa", () => {
   const pagina = renderizarPaginaPessoa(umaPessoa(), "/* css */");
 
-  it("mostra nome, tipo sanguíneo e alergias", () => {
-    expect(pagina).toContain("José Blabla");
+  it("mostra nome abreviado, tipo sanguíneo e alergias", () => {
+    expect(pagina).toContain('<div class="name">José B.</div>');
     expect(pagina).toContain('<span class="type">O+</span>');
     expect(pagina).toContain("<li>Dipirona</li>");
   });
@@ -35,8 +35,13 @@ describe("página da pessoa", () => {
   it("tem links de ligação e WhatsApp para cada contato", () => {
     expect(pagina).toContain('href="tel:+5562999998888"');
     expect(pagina).toContain('href="tel:+5562988887777"');
-    expect(pagina).toContain("https://wa.me/5562999998888?text=Ol%C3%A1!%20Encontrei%20Jos%C3%A9%20Blabla");
-    expect(pagina).toContain("(62) 99999-8888");
+    expect(pagina).toContain("https://wa.me/5562999998888?text=Ol%C3%A1!%20Encontrei%20Jos%C3%A9%20B.");
+    expect(pagina).toContain('<div class="c-name">Maria</div>');
+  });
+
+  it("não expõe sobrenomes nem telefones escritos na tela (proteção contra golpes)", () => {
+    expect(pagina).not.toContain("Blabla");
+    expect(pagina).not.toContain("99999-8888");
   });
 
   it("tem os números de emergência e não é indexável", () => {
@@ -61,7 +66,7 @@ describe("gerarSite", () => {
     const caminhos = arquivos.map((a) => a.caminho);
 
     expect(caminhos).toEqual(
-      expect.arrayContaining(["jose-blabla-abc234.html", "maria-blabla-zz9988.html", "index.html", "404.html", "robots.txt"]),
+      expect.arrayContaining(["jose-abc234.html", "maria-zz9988.html", "index.html", "404.html", "robots.txt"]),
     );
     const indice = arquivos.find((a) => a.caminho === "index.html")?.conteudo ?? "";
     expect(indice).not.toContain("Blabla");

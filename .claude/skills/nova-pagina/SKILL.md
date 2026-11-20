@@ -18,7 +18,7 @@ Dados recebidos: $ARGUMENTS
 
 | Campo | Regra |
 |---|---|
-| Nome completo | obrigatório; vira a URL (`jose-da-silva-xxxxxx.html`) |
+| Nome completo | obrigatório; a página mostra só "José S." e a URL só o primeiro nome (`jose-xxxxxx.html`) |
 | Tipo sanguíneo | obrigatório; um de A+, A-, B+, B-, AB+, AB-, O+, O- |
 | Contatos | 1 ou 2; cada um com **nome**, **relação** (Mãe, Esposa...) e **telefone brasileiro com DDD** |
 | Alergias | obrigatório saber: uma lista, ou a confirmação explícita de que não há nenhuma |
@@ -64,7 +64,7 @@ npm run -s build
 ## 5. Confirme e publique
 
 Mostre ao usuário, de forma curta:
-- o caminho da página (ex.: `/jose-da-silva-v5d9fx.html`) e o link local `http://localhost:8080/<página>`
+- o caminho da página (ex.: `/jose-v5d9fx.html`) e o link local `http://localhost:8080/<página>`
   (se o servidor não estiver rodando: `npm run dev`);
 - um resumo dos dados cadastrados (nome, tipo sanguíneo, alergias, contatos), para ele conferir.
 
@@ -84,5 +84,9 @@ Se falhar porque o `gh` não está instalado ou logado, explique e sugira ao usu
 
 ## Regras que não mudam
 
-- O `codigo` de uma pessoa já cadastrada nunca muda: ele está no QR code colado na bicicleta.
+- O `codigo` de uma pessoa já cadastrada não muda por edição: ele está no QR code colado na bicicleta.
+  A única exceção é o comando `npm run trocar-codigo -- "<nome>"`, para quando houver suspeita de
+  que o link vazou. Só rode com pedido explícito do usuário e lembre que um novo adesivo é necessário.
+- A página mostra de propósito só "Nome S." e o primeiro nome dos contatos, sem telefones na tela
+  (proteção contra o golpe do falso acidente). O nome completo fica só no cadastro.
 - Dados pessoais não vão para o git (`pessoas/` está no `.gitignore`). Não force o commit.

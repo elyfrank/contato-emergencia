@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { FORMATO_CODIGO, gerarCodigo } from "../src/dominio/codigo.ts";
 import { ErroDeDados } from "../src/dominio/erros.ts";
-import { nomeDaPagina } from "../src/dominio/pessoa.ts";
+import { nomeAbreviado, primeiroNome } from "../src/dominio/nome.ts";
+import { comNovoCodigo, nomeDaPagina } from "../src/dominio/pessoa.ts";
 import { slugificar } from "../src/dominio/slug.ts";
-import { formatarTelefone, normalizarTelefone } from "../src/dominio/telefone.ts";
+import { normalizarTelefone } from "../src/dominio/telefone.ts";
 import { validarColecao, validarPessoa } from "../src/dominio/validacao.ts";
 import { umaPessoa } from "./fixtures.ts";
 
@@ -19,11 +20,6 @@ describe("telefone", () => {
   it.each(["123", "99999-8888", "+1 415 555 0100", "(06) 99999-8888", "(62) 89999-8888"])("rejeita %s", (entrada) => {
     expect(normalizarTelefone(entrada)).toBeNull();
   });
-
-  it("formata celular e fixo", () => {
-    expect(formatarTelefone("5562999998888")).toBe("(62) 99999-8888");
-    expect(formatarTelefone("556233334444")).toBe("(62) 3333-4444");
-  });
 });
 
 describe("slug e nome da página", () => {
@@ -31,8 +27,27 @@ describe("slug e nome da página", () => {
     expect(slugificar("  José d'Ávila Conceição ")).toBe("jose-d-avila-conceicao");
   });
 
-  it("junta slug e código aleatório", () => {
-    expect(nomeDaPagina({ nome: "Maria Blabla", codigo: "x7k2pq" })).toBe("maria-blabla-x7k2pq.html");
+  it("usa só o primeiro nome + código, para a URL não revelar o sobrenome", () => {
+    expect(nomeDaPagina({ nome: "María José Blabla", codigo: "x7k2pq" })).toBe("maria-x7k2pq.html");
+  });
+});
+
+describe("nome exibido", () => {
+  it.each([
+    ["José da Silva Blabla", "José B.", "José"],
+    ["  ana   souza ", "ana S.", "ana"],
+    ["Pelé", "Pelé", "Pelé"],
+  ])("%s -> %s / %s", (nome, abreviado, primeiro) => {
+    expect(nomeAbreviado(nome)).toBe(abreviado);
+    expect(primeiroNome(nome)).toBe(primeiro);
+  });
+});
+
+describe("comNovoCodigo", () => {
+  it("troca o código sem alterar os outros dados, nunca repetindo o atual", () => {
+    const codigos = ["abc234", "abc234", "zzz999"];
+    const nova = comNovoCodigo(umaPessoa(), () => codigos.shift() ?? "");
+    expect(nova).toEqual({ ...umaPessoa(), codigo: "zzz999" });
   });
 });
 

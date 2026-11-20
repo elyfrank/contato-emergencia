@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { FORMATO_CODIGO } from "./codigo.ts";
+import { FORMATO_CODIGO, gerarCodigo } from "./codigo.ts";
+import { primeiroNome } from "./nome.ts";
 import { slugificar } from "./slug.ts";
 import { normalizarTelefone } from "./telefone.ts";
 
@@ -44,7 +45,17 @@ export const pessoaSchema = z.object({
 export type Contato = z.output<typeof contatoSchema>;
 export type Pessoa = z.output<typeof pessoaSchema>;
 
-/** Nome do arquivo publicado: "jose-blabla-7fk3qa.html". */
+/**
+ * Nome do arquivo publicado: "jose-7fk3qa.html".
+ * Só o primeiro nome entra na URL, para ela não revelar o sobrenome; o código garante a unicidade.
+ */
 export function nomeDaPagina(pessoa: Pick<Pessoa, "nome" | "codigo">): string {
-  return `${slugificar(pessoa.nome)}-${pessoa.codigo}.html`;
+  return `${slugificar(primeiroNome(pessoa.nome))}-${pessoa.codigo}.html`;
+}
+
+/** Retorna a pessoa com um código novo (diferente do atual), invalidando o link antigo. */
+export function comNovoCodigo(pessoa: Pessoa, gerar: () => string = gerarCodigo): Pessoa {
+  let codigo = gerar();
+  while (codigo === pessoa.codigo) codigo = gerar();
+  return { ...pessoa, codigo };
 }

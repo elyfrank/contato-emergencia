@@ -130,7 +130,6 @@ h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .c-info { flex: 1; min-width: 0; }
 .c-name { font-size: 17px; font-weight: 800; }
 .c-rel { color: var(--muted); font-size: 13px; }
-.c-phone { margin-top: 2px; font-size: 14px; font-weight: 600; }
 .actions { flex: none; display: flex; gap: 8px; }
 .btn-round {
   display: grid; place-items: center;

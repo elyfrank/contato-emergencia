@@ -15,10 +15,3 @@ export function normalizarTelefone(entrada: string): string | null {
   return TELEFONE_BRASIL_COMPLETO.test(completo) ? completo : null;
 }
 
-/** Formata um telefone normalizado para exibição: "(62) 99999-8888". */
-export function formatarTelefone(normalizado: string): string {
-  const ddd = normalizado.slice(2, 4);
-  const numero = normalizado.slice(4);
-  const corte = numero.length - 4;
-  return `(${ddd}) ${numero.slice(0, corte)}-${numero.slice(corte)}`;
-}

@@ -11,6 +11,7 @@
     "build": "node src/cli/build.ts",
     "dev": "node src/cli/build.ts && node src/cli/servir.ts",
     "nova-pessoa": "node src/cli/nova-pessoa.ts",
+    "trocar-codigo": "node src/cli/trocar-codigo.ts",
     "publicar": "node src/cli/publicar.ts",
     "dados:exportar": "node src/cli/exportar-dados.ts",
     "typecheck": "tsc --noEmit",

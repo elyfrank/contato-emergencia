@@ -1,5 +1,5 @@
+import { nomeAbreviado, primeiroNome } from "../dominio/nome.ts";
 import type { Contato, Pessoa } from "../dominio/pessoa.ts";
-import { formatarTelefone } from "../dominio/telefone.ts";
 import { documento } from "./documento.ts";
 import { html, type Html, type Interpolavel } from "./html.ts";
 import { ANIMACAO_PEDALADA, GOTA_DE_SANGUE, ICONE_ALERTA, ICONE_TELEFONE, ICONE_WHATSAPP } from "./icones.ts";
@@ -22,15 +22,21 @@ const PASSOS_DE_AJUDA: readonly Html[] = [
   html`Avise um dos contatos acima e, se puder, fique por perto até o socorro chegar.`,
 ];
 
+/**
+ * A página é pública. Para dificultar o golpe do "falso acidente", ela mostra só o necessário
+ * para o socorro: nome abreviado, primeiro nome e relação dos contatos, e botões de ligar —
+ * sem sobrenomes nem números de telefone escritos na tela.
+ */
 export function renderizarPaginaPessoa(pessoa: Pessoa, estilos: string): string {
+  const nome = nomeAbreviado(pessoa.nome);
   return documento({
-    titulo: `Emergência · ${pessoa.nome}`,
+    titulo: `Emergência · ${nome}`,
     estilos,
     corpo: html`
 ${cabecalho()}
 <main>
-  ${identificacao(pessoa)}
-  ${secao("Contatos de emergência", pessoa.contatos.map((c) => cartaoContato(c, pessoa.nome)))}
+  ${identificacao(nome, pessoa)}
+  ${secao("Contatos de emergência", pessoa.contatos.map((c) => cartaoContato(c, nome)))}
   ${secao("Serviços de emergência", servicosEmergencia())}
   ${secao("Como ajudar", comoAjudar())}
 </main>
@@ -48,12 +54,12 @@ function cabecalho(): Html {
 </header>`;
 }
 
-function identificacao(pessoa: Pessoa): Html {
+function identificacao(nome: string, pessoa: Pessoa): Html {
   return html`
 <section class="card id" aria-label="Identificação">
   <div>
-    <div class="label">Nome do ciclista</div>
-    <div class="name">${pessoa.nome}</div>
+    <div class="label">Ciclista</div>
+    <div class="name">${nome}</div>
   </div>
   <div class="blood" role="img" aria-label="Tipo sanguíneo ${pessoa.tipoSanguineo}">
     ${GOTA_DE_SANGUE}
@@ -81,20 +87,20 @@ function alergias(lista: readonly string[]): Html {
 }
 
 function cartaoContato(contato: Contato, nomeDoCiclista: string): Html {
+  const nome = primeiroNome(contato.nome);
   const mensagem = `Olá! Encontrei ${nomeDoCiclista} (ciclista) após um possível acidente. Estou no local agora.`;
   const whatsapp = `https://wa.me/${contato.telefone}?text=${encodeURIComponent(mensagem)}`;
 
   return html`
 <section class="card contact">
-  <div class="avatar" aria-hidden="true">${contato.nome.charAt(0).toUpperCase()}</div>
+  <div class="avatar" aria-hidden="true">${nome.charAt(0).toUpperCase()}</div>
   <div class="c-info">
-    <div class="c-name">${contato.nome}</div>
+    <div class="c-name">${nome}</div>
     <div class="c-rel">${contato.relacao}</div>
-    <div class="c-phone">${formatarTelefone(contato.telefone)}</div>
   </div>
   <div class="actions">
-    <a class="btn-round wa" href="${whatsapp}" aria-label="Mandar WhatsApp para ${contato.nome}">${ICONE_WHATSAPP}</a>
-    <a class="btn-round call" href="tel:+${contato.telefone}" aria-label="Ligar para ${contato.nome}">${ICONE_TELEFONE}</a>
+    <a class="btn-round wa" href="${whatsapp}" aria-label="Mandar WhatsApp para ${nome}">${ICONE_WHATSAPP}</a>
+    <a class="btn-round call" href="tel:+${contato.telefone}" aria-label="Ligar para ${nome}">${ICONE_TELEFONE}</a>
   </div>
 </section>`;
 }
