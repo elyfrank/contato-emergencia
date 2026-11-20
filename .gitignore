@@ -1,0 +1,6 @@
+node_modules/
+dist/
+
+# Dados pessoais (nomes, telefones, saúde) NUNCA vão para o git.
+# Em produção eles chegam pelo secret PESSOAS_JSON do GitHub Actions.
+pessoas/
