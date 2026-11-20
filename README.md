@@ -53,7 +53,6 @@ Ele pergunta o que faltar e chama o mesmo comando.
 | `npm run check` | typecheck + testes |
 | `npm run publicar` | envia os cadastros ao GitHub e publica o site |
 | `npm run trocar-codigo -- "Nome"` | gera um link novo e invalida o antigo |
-| `npm run -s dados:exportar` | imprime todas as pessoas no formato do secret `PESSOAS_JSON` |
 
 Para editar uma pessoa, altere `pessoas/<slug>.json` e rode o build. **Não mude o `codigo` à mão**:
 ele está no QR code impresso (use `npm run trocar-codigo` só se o link vazar).
@@ -87,7 +86,7 @@ src/
   site/      gerarSite (pura: pessoas -> arquivos) e gravação em disco
   publicacao/ publicação no GitHub (secret + deploy) via ExecutorComando injetável
   cadastro/  leitura dos argumentos de "nova-pessoa"
-  cli/       pontos de entrada: build, nova-pessoa, exportar-dados, servir
+  cli/       pontos de entrada: build, nova-pessoa, trocar-codigo, publicar, servir
 ```
 
 - O domínio não conhece disco nem HTML; a renderização não conhece a origem dos dados.
