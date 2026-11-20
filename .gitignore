@@ -4,3 +4,6 @@ dist/
 # Dados pessoais (nomes, telefones, saúde) NUNCA vão para o git.
 # Em produção eles chegam pelo secret PESSOAS_JSON do GitHub Actions.
 pessoas/
+
+# Contato do responsável exibido na landing page (fora do git; no CI vem do secret SITE_JSON).
+site.json

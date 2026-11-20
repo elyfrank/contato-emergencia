@@ -20,36 +20,42 @@ function executorFalso(falharEm?: string): ExecutorComando & { chamadas: Chamada
   };
 }
 
-const opcoes = { nomeSecret: "PESSOAS_JSON", workflow: "publicar.yml" };
+const secrets = [
+  { nome: "PESSOAS_JSON", valor: JSON.stringify([umaPessoa()]) },
+  { nome: "SITE_JSON", valor: '{"marca":"X"}' },
+];
 
 describe("publicarNoGithub", () => {
-  it("verifica o login, grava o secret via stdin e dispara o deploy, nessa ordem", async () => {
+  it("verifica o login, grava cada secret via stdin e dispara o deploy, nessa ordem", async () => {
     const executor = executorFalso();
-    await publicarNoGithub([umaPessoa()], executor, opcoes);
+    await publicarNoGithub(secrets, executor, "publicar.yml");
 
     expect(executor.chamadas.map((c) => c.comando)).toEqual([
       "gh auth status",
       "gh secret set PESSOAS_JSON",
+      "gh secret set SITE_JSON",
       "gh workflow run publicar.yml",
     ]);
-    const secret = executor.chamadas[1];
-    expect(secret?.comando).not.toContain("5562");
-    expect(JSON.parse(secret?.entrada ?? "")).toEqual([umaPessoa()]);
+    const pessoas = executor.chamadas[1];
+    expect(pessoas?.comando).not.toContain("5562");
+    expect(JSON.parse(pessoas?.entrada ?? "")).toEqual([umaPessoa()]);
   });
 
   it("não envia nada se o gh não estiver logado", async () => {
     const executor = executorFalso("gh auth status");
-    await expect(publicarNoGithub([umaPessoa()], executor, opcoes)).rejects.toThrow(/gh auth login/);
+    await expect(publicarNoGithub(secrets, executor, "publicar.yml")).rejects.toThrow(/gh auth login/);
     expect(executor.chamadas).toHaveLength(1);
   });
 
-  it("não dispara o deploy se gravar o secret falhar", async () => {
+  it("não dispara o deploy se gravar um secret falhar", async () => {
     const executor = executorFalso("gh secret set PESSOAS_JSON");
-    await expect(publicarNoGithub([umaPessoa()], executor, opcoes)).rejects.toThrow(/secret PESSOAS_JSON[\s\S]*boom/);
+    await expect(publicarNoGithub(secrets, executor, "publicar.yml")).rejects.toThrow(/secret PESSOAS_JSON[\s\S]*boom/);
     expect(executor.chamadas).toHaveLength(2);
   });
 
-  it("recusa publicar sem pessoas", async () => {
-    await expect(publicarNoGithub([], executorFalso(), opcoes)).rejects.toThrow(/nenhuma pessoa/);
+  it("recusa secret acima do limite do GitHub sem chamar nada", async () => {
+    const executor = executorFalso();
+    await expect(publicarNoGithub([{ nome: "GRANDE", valor: "x".repeat(50_000) }], executor, "w")).rejects.toThrow(/limite/);
+    expect(executor.chamadas).toHaveLength(0);
   });
 });

@@ -170,6 +170,17 @@ h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 footer { padding: 10px 16px 30px; color: var(--muted); font-size: 12px; text-align: center; }
 .heart { color: var(--red); }
 
+/* Página de demonstração */
+.demo-banner {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; justify-content: center;
+  padding: 10px 16px;
+  background: var(--yellow); color: var(--ink);
+  font-size: 13px; text-align: center;
+}
+.demo-banner a { font-weight: 800; }
+.is-demo { opacity: .55; cursor: not-allowed; }
+
 /* Página neutra (raiz e 404) */
 .neutral { margin-top: 15vh; text-align: center; }
 .neutral h1 { margin-bottom: 10px; font-family: var(--display); font-size: 26px; }

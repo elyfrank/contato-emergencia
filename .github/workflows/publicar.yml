@@ -1,6 +1,7 @@
 name: Publicar no GitHub Pages
 
-# Os dados das pessoas NÃO estão no repositório: chegam pelo secret PESSOAS_JSON.
+# Os dados das pessoas e o contato da landing NÃO estão no repositório: chegam pelos
+# secrets PESSOAS_JSON e SITE_JSON.
 # "npm run publicar" atualiza o secret e dispara este workflow.
 #
 # O repositório é público, então logs e artefatos do Actions também são:
@@ -35,6 +36,7 @@ jobs:
       - run: npm run build
         env:
           PESSOAS_JSON: ${{ secrets.PESSOAS_JSON }}
+          SITE_JSON: ${{ secrets.SITE_JSON }}
       # Equivale ao actions/upload-pages-artifact, mas sem o "tar -v" que lista
       # o nome de cada página no log público.
       - name: Empacotar o site (sem listar arquivos)

@@ -19,10 +19,12 @@
     "check": "npm run typecheck && npm test"
   },
   "dependencies": {
+    "qrcode": "^1.5.4",
     "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@types/qrcode": "^1.5.5",
     "typescript": "^5.9.3",
     "vitest": "^5.1.1"
   }

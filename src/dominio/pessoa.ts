@@ -10,7 +10,7 @@ export const MAX_CONTATOS = 2;
 const textoObrigatorio = (campo: string) =>
   z.string({ error: `${campo} é obrigatório` }).trim().min(1, `${campo} é obrigatório`);
 
-const telefone = z.string({ error: "telefone é obrigatório" }).transform((valor, ctx) => {
+export const telefoneSchema = z.string({ error: "telefone é obrigatório" }).transform((valor, ctx) => {
   const normalizado = normalizarTelefone(valor);
   if (normalizado === null) {
     ctx.addIssue({
@@ -25,7 +25,7 @@ const telefone = z.string({ error: "telefone é obrigatório" }).transform((valo
 export const contatoSchema = z.object({
   nome: textoObrigatorio("nome do contato"),
   relacao: textoObrigatorio("relação (ex.: Mãe, Esposa)"),
-  telefone,
+  telefone: telefoneSchema,
 });
 
 export const pessoaSchema = z.object({

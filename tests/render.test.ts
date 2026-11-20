@@ -62,7 +62,7 @@ describe("página da pessoa", () => {
 
 describe("gerarSite", () => {
   it("gera uma página por pessoa mais as páginas neutras, sem listar ninguém na raiz", () => {
-    const arquivos = gerarSite([umaPessoa(), umaPessoa({ nome: "Maria Blabla", codigo: "zz9988" })], "");
+    const arquivos = gerarSite({ pessoas: [umaPessoa(), umaPessoa({ nome: "Maria Blabla", codigo: "zz9988" })], estilos: "" });
     const caminhos = arquivos.map((a) => a.caminho);
 
     expect(caminhos).toEqual(

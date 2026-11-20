@@ -7,8 +7,12 @@ export const CONFIG = {
   diretorioPessoas: join(RAIZ, "pessoas"),
   diretorioSaida: join(RAIZ, "dist"),
   arquivoEstilos: join(RAIZ, "src", "render", "estilos.css"),
-  /** No CI os dados vêm deste secret, nunca do repositório. */
+  arquivoEstilosLanding: join(RAIZ, "src", "render", "estilos-landing.css"),
+  /** Configuração da landing (marca, URL, contato). Fora do git, como os cadastros. */
+  arquivoSite: join(RAIZ, "site.json"),
+  /** No CI os dados vêm destes secrets, nunca do repositório. */
   variavelDados: "PESSOAS_JSON",
+  variavelSite: "SITE_JSON",
   /** Arquivo em .github/workflows que faz o deploy no GitHub Pages. */
   workflowPublicacao: "publicar.yml",
   porta: Number(process.env.PORTA ?? 8080),
