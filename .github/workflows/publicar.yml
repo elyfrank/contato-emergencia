@@ -2,6 +2,10 @@ name: Publicar no GitHub Pages
 
 # Os dados das pessoas NÃO estão no repositório: chegam pelo secret PESSOAS_JSON.
 # "npm run publicar" atualiza o secret e dispara este workflow.
+#
+# O repositório é público, então logs e artefatos do Actions também são:
+# - o build não imprime nomes nem links em CI;
+# - o pacote do site é criado sem listar arquivos e apagado logo após o deploy.
 
 on:
   push:
@@ -31,16 +35,34 @@ jobs:
       - run: npm run build
         env:
           PESSOAS_JSON: ${{ secrets.PESSOAS_JSON }}
-      - uses: actions/upload-pages-artifact@v3
+      # Equivale ao actions/upload-pages-artifact, mas sem o "tar -v" que lista
+      # o nome de cada página no log público.
+      - name: Empacotar o site (sem listar arquivos)
+        run: tar --create --file "$RUNNER_TEMP/artifact.tar" --directory dist .
+      - uses: actions/upload-artifact@v4
         with:
-          path: dist
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      actions: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
         uses: actions/deploy-pages@v4
+      - name: Apagar o pacote do site (contém os telefones)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" -q '.artifacts[].id' |
+            xargs -r -I{} gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/{}"

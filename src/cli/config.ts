@@ -12,4 +12,6 @@ export const CONFIG = {
   /** Arquivo em .github/workflows que faz o deploy no GitHub Pages. */
   workflowPublicacao: "publicar.yml",
   porta: Number(process.env.PORTA ?? 8080),
+  /** No CI os logs são públicos (repositório público): nunca imprimir nomes ou links das pessoas. */
+  emCi: Boolean(process.env.CI),
 } as const;

@@ -22,5 +22,6 @@ await executar(async () => {
 
   const saida = relative(process.cwd(), CONFIG.diretorioSaida) || ".";
   console.log(`✔ ${pessoas.length} página(s) gerada(s) em ${saida}/`);
+  if (CONFIG.emCi) return;
   for (const pessoa of pessoas) console.log(`  /${nomeDaPagina(pessoa)}  (${pessoa.nome})`);
 });
